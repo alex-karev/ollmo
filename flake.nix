@@ -33,28 +33,40 @@
       };
     })
     // {
-      nixosModules.default = { config, lib, pkgs, ... }:
-        with lib; {
-          options.services.ligmagate = {
-            enable = mkEnableOption "ligmagate";
-            configPath = mkOption {
-              type = types.path;
-              default = "/etc/ligmagate";
-              description = "Path to the ligmagate configs.";
+      nixosModules = let
+        module = {
+          config,
+          lib,
+          pkgs,
+          ...
+        }: let
+          cfg = config.services.ligmagate;
+        in
+          with lib; {
+            options.services.ligmagate = {
+              enable = mkEnableOption "ligmagate";
+              configPath = mkOption {
+                type = types.path;
+                default = "/etc/ligmagate";
+                description = "Path to the ligmagate configs.";
+              };
             };
-          };
 
-          config = mkIf config.services.ligmagate.enable {
-            systemd.services.ligmagate = {
-              description = "OpenAI API-compatible LLM gateway";
-              wantedBy = ["multi-user.target"];
-              serviceConfig = {
-                Type = "simple";
-                ExecStart = "${self.packages.${pkgs.system}.default}/bin/ligmagate -c ${cfg.configPath}";
-                Restart = "on-failure";
+            config = mkIf cfg.enable {
+              systemd.services.ligmagate = {
+                description = "OpenAI API-compatible LLM gateway";
+                wantedBy = ["multi-user.target"];
+                serviceConfig = {
+                  Type = "simple";
+                  ExecStart = "${self.packages.${pkgs.system}.default}/bin/ligmagate -c ${cfg.configPath}";
+                  Restart = "on-failure";
+                };
               };
             };
           };
-        };
+      in {
+        default = module;
+        ligmagate = module;
+      };
     };
 }
