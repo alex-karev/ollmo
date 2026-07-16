@@ -11,9 +11,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/alex-karev/ligmagate">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
+  <!-- <a href="https://github.com/alex-karev/ligmagate"> -->
+  <!--   <img src="images/logo.png" alt="Logo" width="80" height="80"> -->
+  <!-- </a> -->
 
   <h3 align="center">LigmaGate</h3>
 
@@ -70,7 +70,7 @@ This project aims to solve this exact problem by providing a self-hosted gateway
 Main features:
 
 * Lightweight and written in Rust.
-* Robust config format allowing adding new providers, models and their customized variants easily.
+* Robust [config format](https://github.com/alex-karev/ligmagate/blob/main/config.example.toml) allowing adding new providers, models and their customized variants easily.
 * Supports replacing or combining system prompts for any LLM-powered tools you use.
 * Does not depend on env variables. Supports storing keys in a separate env file.
 * Self-hosted, can run as systemd service.
