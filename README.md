@@ -12,13 +12,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/alex-karev/ollmo">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo.png" alt="Logo" width="100" height="100">
   </a>
 
   <h3 align="center">Ollmo: Open LLM Orchestrator</h3>
 
   <p align="center">
-    OpenAI API-compatible LLM gateway for personal use.
+    Local OpenAI API-compatible LLM gateway.
     <!-- <br /> -->
     <!-- <a href="https://github.com/alex-karev/ollmo"><strong>Explore the docs »</strong></a> -->
     <!-- <br /> -->
@@ -72,6 +72,7 @@ Main features:
 * Lightweight and written in Rust.
 * Robust [config format](https://github.com/alex-karev/ollmo/blob/main/config.example.toml) allowing adding new providers, models and their customized variants easily.
 * Supports replacing or combining system prompts for any LLM-powered tools you use.
+* Hot-reload for any configuration and env changes.
 * Does not depend on env variables. Supports storing keys in a separate env file.
 * Self-hosted, can run as systemd service.
 * Can be integrated with NixOS easily.
@@ -87,9 +88,6 @@ Main features:
 
 <!-- GETTING STARTED -->
 ## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
@@ -150,12 +148,15 @@ _Refer to this [config example](https://github.com/alex-karev/ollmo/blob/main/co
 <!-- ROADMAP -->
 ## Roadmap
 
+- [ ] Fix model routing.
+- [ ] Add multi-user support.
+- [ ] Add token counter.
+- [ ] Add custom tools (with lua?).
 - [ ] Add Arch Linux and Debian builds.
+- [ ] Host cachix build.
 - [ ] Add systemctl service template.
 - [ ] Add docker build.
-- [ ] Add text generation endpoint.
 - [ ] Code cleanup and optimization.
-- [ ] Add token counter.
 - [ ] Add built-in providers like OpenAI and Deepseek.
 - [ ] Add Claude support.
 
