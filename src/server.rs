@@ -138,7 +138,9 @@ async fn chat_completions(
                                     req_message.clone()
                                 } else {
                                     String::from("")
-                                }
+                                },
+                                model => &data.model_name,
+                                provider => &data.provider_name
                         ))
                         .unwrap_or(String::from(""));
 

@@ -82,6 +82,19 @@
 # and the chat completion endpoint on http://localhost:port/v1/chat/completions 
 # will redirect your request to the specified providers.
 
+###########
+# Aliases #
+###########
+
+# Aliases allow you to define a short or friendly name for any model or variant,
+# and use it directly in the "model" parameter instead of the full name.
+
+# [aliases]
+# smart = "claude-sonnet"
+# dumb = "gpt3"
+
+# Then you can just send {"model": "smart"} and it will be treated as "claude-sonnet".
+
 ############
 # Variants #
 ############
@@ -92,7 +105,7 @@
 
 # [variants.example_variant]
 
-# Choose previously defined model which will be used for this variant
+# Choose previously defined model or alias which will be used for this variant
 
 # model = "example-model"
 

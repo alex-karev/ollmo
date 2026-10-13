@@ -16,6 +16,8 @@ pub struct Config {
     models: HashMap<String, Model>,
     #[serde(default)]
     variants: HashMap<String, Variants>,
+    #[serde(default)]
+    aliases: HashMap<String, String>,
     env_file: Option<PathBuf>,
     port: Option<u16>,
     host: Option<String>,
@@ -117,6 +119,7 @@ pub struct RequestData {
     pub system_prompt: Option<PathBuf>,
     pub system_prompt_mode: PromptMode,
     pub temperature: Option<f32>,
+    pub provider_name: String,
 }
 
 impl Config {
@@ -229,7 +232,9 @@ impl Config {
 
         // Check variants
         for (variant_name, variant) in self.variants.iter() {
-            if !self.models.contains_key(&variant.model) {
+            if !self.models.contains_key(&variant.model)
+                && !self.aliases.contains_key(&variant.model)
+            {
                 error!(
                     "Variant {} uses unspecified model {}",
                     variant_name, &variant.model
@@ -246,6 +251,19 @@ impl Config {
                     );
                     valid = false;
                 }
+            }
+        }
+
+        // Check aliases
+        for (alias, target) in self.aliases.iter() {
+            if !self.models.contains_key(target.as_str())
+                && !self.variants.contains_key(target.as_str())
+            {
+                error!(
+                    "Alias {} points to undefined model or variant {}",
+                    alias, target
+                );
+                valid = false;
             }
         }
 
@@ -329,11 +347,15 @@ impl Config {
         let variant = self.variants.get(model_name);
 
         // Get model
-        let model_name = if variant.is_some() {
+        let mut model_name = if variant.is_some() {
             &variant.unwrap().model
         } else {
             model_name
         };
+        model_name = self
+            .aliases
+            .get(model_name)
+            .map_or(model_name, |s| s.as_str());
         let model = self
             .models
             .get(model_name)
@@ -344,10 +366,10 @@ impl Config {
         let provider_name = model
             .routing
             .first()
-            .ok_or(anyhow!("Model {} has no providers", model_name))?;
+            .ok_or(anyhow!("Model {} has no providers", model_name))?.clone();
         let provider = self
             .providers
-            .get(provider_name)
+            .get(&provider_name)
             .ok_or(anyhow!("Provider {} not found", provider_name))?;
         let provider_kind = provider.kind.clone();
 
@@ -371,7 +393,7 @@ impl Config {
         let mut extra_headers = HashMap::new();
         extra_body.extend(model.extra_body.clone());
         extra_headers.extend(model.extra_headers.clone());
-        if let Some(model_provider) = model.providers.get(provider_name) {
+        if let Some(model_provider) = model.providers.get(&provider_name) {
             extra_body.extend(model_provider.extra_body.clone());
             extra_headers.extend(model_provider.extra_headers.clone());
         }
@@ -402,7 +424,7 @@ impl Config {
             .or(model.temperature);
 
         // Check Provider-specific model name
-        let model_name = if let Some(model_provider) = model.providers.get(provider_name) {
+        let model_name = if let Some(model_provider) = model.providers.get(&provider_name) {
             model_provider.model_name.as_deref().unwrap_or(model_name)
         } else {
             model_name
@@ -420,13 +442,15 @@ impl Config {
             model_name,
             system_prompt,
             system_prompt_mode,
+            provider_name
         })
     }
 
-    /// List models and variants
+    /// List models, variants and aliases
     pub fn list_models(&self) -> Vec<String> {
         let mut names: Vec<String> = self.models.keys().cloned().collect();
         names.extend(self.variants.keys().cloned());
+        names.extend(self.aliases.keys().cloned());
         names
     }
 }
