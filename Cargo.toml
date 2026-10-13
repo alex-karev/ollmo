@@ -1,6 +1,6 @@
 [package]
 name = "ollmo"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 authors = ["Alex Karev"]
 license-file = "LICENSE"
@@ -29,3 +29,16 @@ toml = "1.1.2"
 tracing = "0.1.44"
 tracing-subscriber = "0.3.23"
 walkdir = "2.5.0"
+
+[package.metadata.deb]
+maintainer = "Alex Karev <alexkarev@sjtu.edu.cn>"
+copyright = "2026, Alex Karev <alexkarev@sjtu.edu.cn>"
+license-file = ["LICENSE", "6"]
+depends = "$auto"
+section = "utility"
+priority = "optional"
+assets = [
+    ["target/release/ollmo", "usr/bin/", "755"],
+    ["README.md", "usr/share/doc/ollmo/README", "644"],
+    ["ollmo@.service", "lib/systemd/system/", "644"],
+]

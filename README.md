@@ -95,6 +95,38 @@ Install [rust compiler](https://rust-lang.org/tools/install/).
 
 ### Installation
 
+Arch Linux:
+
+1. Clone the repo and build with makepkg:
+   ```sh
+   git clone https://github.com/alex-karev/ollmo.git
+   cd ollmo
+   makepkg -si
+   ```
+2. Enable and start the systemd service:
+   ```sh
+   sudo systemctl enable --now ollmo@$USER
+   ```
+
+Debian:
+
+1. Install [cargo-deb](https://github.com/mmstick/cargo-deb):
+   ```sh
+   cargo install cargo-deb
+   ```
+2. Build the `.deb` package:
+   ```sh
+   cargo deb
+   ```
+3. Install it:
+   ```sh
+   sudo dpkg -i target/debian/ollmo_*.deb
+   ```
+4. Enable and start the systemd service:
+   ```sh
+   sudo systemctl enable --now ollmo@$USER
+   ```
+
 NixOS:
 
 1. Add this into your system flake inputs:
@@ -126,9 +158,17 @@ Other distros:
    ```
 2. Build
    ```sh
-   cargo build
+   cargo build --release
    ```
-3. Done! Binary will be in target. Copy it into your `/usr/bin`
+3. Copy the binary and systemd service:
+   ```sh
+   sudo cp target/release/ollmo /usr/local/bin/
+   sudo cp systemd/ollmo@.service /etc/systemd/system/
+   ```
+4. Start the service:
+   ```sh
+   sudo systemctl enable --now ollmo@$USER
+   ```
 
 *More distros will be supported natively in the future*
 
@@ -151,10 +191,9 @@ _Refer to this [config example](https://github.com/alex-karev/ollmo/blob/main/co
 - [ ] Fix model routing.
 - [ ] Add multi-user support.
 - [ ] Add token counter.
-- [ ] Add custom tools (with lua?).
-- [ ] Add Arch Linux and Debian builds.
+- [x] Add Arch Linux and Debian builds.
 - [ ] Host cachix build.
-- [ ] Add systemctl service template.
+- [x] Add systemctl service template.
 - [ ] Add docker build.
 - [ ] Code cleanup and optimization.
 - [ ] Add built-in providers like OpenAI and Deepseek.
